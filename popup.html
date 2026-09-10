@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      color: #1e293b;
+      overflow-y: auto;
+    }
+    h3 {
+      margin: 0 0 8px 0;
+      font-size: 15px;
+      color: #0f172a;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    h3 img {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #2563eb;
+      margin: 10px 0 4px 0;
+      background: #eff6ff;
+      padding: 3px 6px;
+      border-radius: 3px;
+    }
+    .field {
+      margin-bottom: 5px;
+    }
+    label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      margin-bottom: 2px;
+      color: #64748b;
+      text-transform: uppercase;
+    }
+    input, select {
+      width: 100%;
+      padding: 5px 7px;
+      box-sizing: border-box;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    select.unit-select {
+      background-color: #f8fafc;
+      border: 1.5px solid #2563eb;
+      font-weight: 700;
+      color: #1e40af;
+    }
+    .row {
+      display: flex;
+      gap: 6px;
+    }
+    .row .field {
+      flex: 1;
+    }
+
+    /* 13-Axle Horizontal Scroll Table */
+    .axle-table-wrap {
+      overflow-x: auto;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 6px;
+      margin-top: 4px;
+    }
+    table.axle-table {
+      border-collapse: collapse;
+      font-size: 10px;
+      min-width: 950px;
+    }
+    table.axle-table th {
+      padding: 4px 3px;
+      text-align: center;
+      color: #334155;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    table.axle-table td {
+      padding: 2px 3px;
+      vertical-align: middle;
+    }
+    table.axle-table input {
+      width: 58px;
+      padding: 3px 2px;
+      font-size: 10px;
+      text-align: center;
+    }
+    .row-label {
+      font-weight: 600;
+      color: #475569;
+      white-space: nowrap;
+      text-align: left !important;
+      position: sticky;
+      left: 0;
+      background: #f8fafc;
+      z-index: 2;
+      padding-right: 8px !important;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 12px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    button.secondary-button {
+      margin-top: 6px;
+      padding: 7px;
+      background: #64748b;
+      font-size: 11px;
+    }
+    button.secondary-button:hover {
+      background: #475569;
+    }
+    .status {
+      margin-top: 8px;
+      font-size: 11px;
+      text-align: center;
+      color: #64748b;
+    }
+
+    /* Google Maps Wrapper */
+    .test-maps-wrap {
+      margin-top: 15px;
+      padding: 10px;
+      border: 1.5px solid #2563eb;
+      border-radius: 6px;
+      background: #f8fafc;
+    }
+    .test-maps-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .test-maps-header strong {
+      font-size: 12px;
+      color: #1e3a8a;
+    }
+    .btn-maps-route {
+      margin: 0;
+      padding: 7px;
+      font-size: 11px;
+      background: #0f172a;
+      border-radius: 4px;
+      flex: 1.6;
+    }
+    .btn-maps-ext {
+      margin: 0;
+      padding: 7px;
+      font-size: 11px;
+      background: #2563eb;
+      border-radius: 4px;
+      flex: 1.2;
+    }
+    .btn-maps-ext:hover {
+      background: #1d4ed8;
+    }
+    .btn-maps-clear {
+      margin: 0;
+      padding: 7px 12px;
+      font-size: 11px;
+      background: #64748b;
+      border-radius: 4px;
+      width: auto;
+    }
+    .btn-maps-clear:hover {
+      background: #475569;
+    }
+  </style>
+</head>
+<body>
+  <h3>
+    <img src="icons/icon128.png" alt="logo" onerror="this.style.display='none'">
+    <span>Frontline permits AutoFiller</span>
+  </h3>
+
+  <div class="field">
+    <label>Company / Profile</label>
+    <select id="companySelect"></select>
+  </div>
+
+  <div class="field">
+    <label>Hauler Name (Company)</label>
+    <input type="text" id="haulerNameInput">
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label>USDOT</label>
+      <input type="text" id="usdotInput">
+    </div>
+    <div class="field">
+      <label>Account #</label>
+      <input type="text" id="accountInput" placeholder="Optional">
+    </div>
+  </div>
+
+  <div class="section-title">Permit Contact</div>
+  <div class="field">
+    <label>Contact name</label>
+    <input type="text" id="contactNameInput" autocomplete="name">
+  </div>
+  <div class="row">
+    <div class="field">
+      <label>Contact phone</label>
+      <input type="tel" id="contactPhoneInput" autocomplete="tel">
+    </div>
+    <div class="field">
+      <label>Contact email</label>
+      <input type="email" id="contactEmailInput" autocomplete="email">
+    </div>
+  </div>
+
+  <div class="section-title">Truck (Power Unit)</div>
+  <div class="row">
+    <div class="field" style="flex: 1.2;">
+      <label>Unit #</label>
+      <select id="truckUnitSelect" class="unit-select"></select>
+    </div>
+    <div class="field" style="flex: 1.2;">
+      <label>Manual unit #</label>
+      <input type="text" id="truckUnitManualInput">
+    </div>
+    <div class="field">
+      <label>Make</label>
+      <input type="text" id="truckMakeInput">
+    </div>
+    <div class="field">
+      <label>Year</label>
+      <input type="text" id="truckYearInput">
+    </div>
+  </div>
+  <div class="row">
+    <div class="field">
+      <label>Plate #</label>
+      <input type="text" id="truckPlateInput">
+    </div>
+    <div class="field">
+      <label>Plate State</label>
+      <input type="text" id="truckStateInput">
+    </div>
+  </div>
+  <div class="field">
+    <label>Truck VIN</label>
+    <input type="text" id="truckVinInput">
+  </div>
+
+  <div class="section-title">Trailer</div>
+  <div class="row">
+    <div class="field" style="flex: 1.4;">
+      <label>Unit #</label>
+      <select id="trailerUnitSelect" class="unit-select"></select>
+    </div>
+    <div class="field" style="flex: 1.2;">
+      <label>Manual unit #</label>
+      <input type="text" id="trailerUnitManualInput">
+    </div>
+    <div class="field" style="flex: 1.2;">
+      <label>Trailer Type</label>
+      <select id="trailerTypeSelect" style="font-weight: 600; color: #0f172a;">
+        <option value="stepdeck">Stepdeck</option>
+        <option value="flatbed">Flatbed</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label>Make</label>
+      <input type="text" id="trailerMakeInput">
+    </div>
+    <div class="field">
+      <label>Year</label>
+      <input type="text" id="trailerYearInput">
+    </div>
+  </div>
+  <div class="row">
+    <div class="field">
+      <label>Plate #</label>
+      <input type="text" id="trailerPlateInput">
+    </div>
+    <div class="field">
+      <label>Plate State</label>
+      <input type="text" id="trailerStateInput">
+    </div>
+    <div class="field">
+      <label>Trailer Length</label>
+      <input type="text" id="trailerLengthInput" value="53' 0&quot;">
+    </div>
+  </div>
+  <div class="field">
+    <label>Trailer VIN</label>
+    <input type="text" id="trailerVinInput">
+  </div>
+
+  <div class="section-title">Load / Commodity Dimensions & Weight</div>
+  <div class="row">
+    <div class="col" style="flex: 2;">
+      <label>COMMODITY DESCRIPTION</label>
+      <input type="text" id="commodityDescInput" value="Machinery / Excavator" />
+    </div>
+    <div class="col" style="flex: 1;">
+      <label>LOAD ID</label>
+      <input type="text" id="loadIdInput" placeholder="" />
+    </div>
+    <div class="col" style="flex: 1;">
+      <label>LOAD WEIGHT</label>
+      <input type="text" id="loadWeightInput" value="45000" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="field">
+      <label>Load Length</label>
+      <input type="text" id="loadLengthInput" value="30' 0&quot;">
+    </div>
+    <div class="field">
+      <label>Load Width</label>
+      <input type="text" id="loadWidthInput" value="10' 0&quot;">
+    </div>
+    <div class="field">
+      <label>Load Height</label>
+      <input type="text" id="loadHeightInput" value="10' 6&quot;">
+    </div>
+  </div>
+
+  <div class="section-title">Overall Dimensions & Weight</div>
+  <div class="row">
+    <div class="field">
+      <label>Overall Length</label>
+      <input type="text" id="overallLengthInput" value="75' 0&quot;">
+    </div>
+    <div class="field">
+      <label>Overall Width</label>
+      <input type="text" id="overallWidthInput" value="10' 0&quot;">
+    </div>
+    <div class="field">
+      <label>Overall Height</label>
+      <input type="text" id="overallHeightInput" value="14' 0&quot;">
+    </div>
+  </div>
+  <div class="row">
+    <div class="field">
+      <label>Front Overhang</label>
+      <input type="text" id="frontOverhangInput" value="0">
+    </div>
+    <div class="field">
+      <label>Rear Overhang</label>
+      <input type="text" id="rearOverhangInput" value="0">
+    </div>
+    <div class="field">
+      <label>Gross Weight (lbs)</label>
+      <input type="text" id="grossWeightInput" value="80000">
+    </div>
+  </div>
+
+  <!-- Axle Information Section (13 Axles) -->
+  <div class="section-title">Axle Information</div>
+  <div class="row" style="margin-bottom: 6px;">
+    <div class="field" style="max-width: 140px;">
+      <label>Total Number of Axles</label>
+      <input type="text" id="totalAxlesInput" value="5">
+    </div>
+  </div>
+
+  <div class="axle-table-wrap">
+    <table class="axle-table">
+      <thead>
+        <tr>
+          <th class="row-label"></th>
+          <th>(Front) Axle 1</th>
+          <th>Axle 2</th>
+          <th>Axle 3</th>
+          <th>Axle 4</th>
+          <th>Axle 5</th>
+          <th>Axle 6</th>
+          <th>Axle 7</th>
+          <th>Axle 8</th>
+          <th>Axle 9</th>
+          <th>Axle 10</th>
+          <th>Axle 11</th>
+          <th>Axle 12</th>
+          <th>Axle 13</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Axle Type -->
+        <tr>
+          <td class="row-label">Axle Type</td>
+          <td>
+            <select id="axleType1" style="width: 72px; font-size: 9px; padding: 2px;">
+              <option value="STEERING" selected>STEERING</option>
+              <option value="DRIVES">DRIVES</option>
+              <option value="TRAILER">TRAILER</option>
+              <option value="LIFT">LIFT</option>
+            </select>
+          </td>
+          <td>
+            <select id="axleType2" style="width: 72px; font-size: 9px; padding: 2px;">
+              <option value="STEERING">STEERING</option>
+              <option value="DRIVES" selected>DRIVES</option>
+              <option value="TRAILER">TRAILER</option>
+              <option value="LIFT">LIFT</option>
+            </select>
+          </td>
+          <td>
+            <select id="axleType3" style="width: 72px; font-size: 9px; padding: 2px;">
+              <option value="STEERING">STEERING</option>
+              <option value="DRIVES" selected>DRIVES</option>
+              <option value="TRAILER">TRAILER</option>
+              <option value="LIFT">LIFT</option>
+            </select>
+          </td>
+          <td>
+            <select id="axleType4" style="width: 72px; font-size: 9px; padding: 2px;">
+              <option value="STEERING">STEERING</option>
+              <option value="DRIVES">DRIVES</option>
+              <option value="TRAILER" selected>TRAILER</option>
+              <option value="LIFT">LIFT</option>
+            </select>
+          </td>
+          <td>
+            <select id="axleType5" style="width: 72px; font-size: 9px; padding: 2px;">
+              <option value="STEERING">STEERING</option>
+              <option value="DRIVES">DRIVES</option>
+              <option value="TRAILER" selected>TRAILER</option>
+              <option value="LIFT">LIFT</option>
+            </select>
+          </td>
+          <td>
+            <select id="axleType6" style="width: 72px; font-size: 9px; padding: 2px;">
+              <option value="" selected></option>
+              <option value="TRAILER">TRAILER</option>
+              <option value="BOOSTER">BOOSTER</option>
+              <option value="LIFT">LIFT</option>
+            </select>
+          </td>
+          <td>
+            <select id="axleType7" style="width: 72px; font-size: 9px; padding: 2px;">
+              <option value="" selected></option>
+              <option value="TRAILER">TRAILER</option>
+              <option value="BOOSTER">BOOSTER</option>
+              <option value="LIFT">LIFT</option>
+            </select>
+          </td>
+          <td>
+            <select id="axleType8" style="width: 72px; font-size: 9px; padding: 2px;">
+              <option value="" selected></option>
+              <option value="TRAILER">TRAILER</option>
+              <option value="BOOSTER">BOOSTER</option>
+              <option value="LIFT">LIFT</option>
+            </select>
+          </td>
+          <td>
+            <select id="axleType9" style="width: 72px; font-size: 9px; padding: 2px;">
+              <option value="" selected></option>
+              <option value="TRAILER">TRAILER</option>
+              <option value="BOOSTER">BOOSTER</option>
+              <option value="LIFT">LIFT</option>
+            </select>
+          </td>
+          <td>
+            <select id="axleType10" style="width: 72px; font-size: 9px; padding: 2px;">
+              <option value="" selected></option>
+              <option value="TRAILER">TRAILER</option>
+              <option value="BOOSTER">BOOSTER</option>
+              <option value="LIFT">LIFT</option>
+            </select>
+          </td>
+          <td>
+            <select id="axleType11" style="width: 72px; font-size: 9px; padding: 2px;">
+              <option value="" selected></option>
+              <option value="TRAILER">TRAILER</option>
+              <option value="BOOSTER">BOOSTER</option>
+              <option value="LIFT">LIFT</option>
+            </select>
+          </td>
+          <td>
+            <select id="axleType12" style="width: 72px; font-size: 9px; padding: 2px;">
+              <option value="" selected></option>
+              <option value="TRAILER">TRAILER</option>
+              <option value="BOOSTER">BOOSTER</option>
+              <option value="LIFT">LIFT</option>
+            </select>
+          </td>
+          <td>
+            <select id="axleType13" style="width: 72px; font-size: 9px; padding: 2px;">
+              <option value="" selected></option>
+              <option value="TRAILER">TRAILER</option>
+              <option value="BOOSTER">BOOSTER</option>
+              <option value="LIFT">LIFT</option>
+            </select>
+          </td>
+        </tr>
+        <!-- Axle Weight -->
+        <tr>
+          <td class="row-label">Axle Weight</td>
+          <td><input type="text" id="axleWt1" value="12000"></td>
+          <td><input type="text" id="axleWt2" value="17000"></td>
+          <td><input type="text" id="axleWt3" value="17000"></td>
+          <td><input type="text" id="axleWt4" value="17000"></td>
+          <td><input type="text" id="axleWt5" value="17000"></td>
+          <td><input type="text" id="axleWt6" value=""></td>
+          <td><input type="text" id="axleWt7" value=""></td>
+          <td><input type="text" id="axleWt8" value=""></td>
+          <td><input type="text" id="axleWt9" value=""></td>
+          <td><input type="text" id="axleWt10" value=""></td>
+          <td><input type="text" id="axleWt11" value=""></td>
+          <td><input type="text" id="axleWt12" value=""></td>
+          <td><input type="text" id="axleWt13" value=""></td>
+        </tr>
+        <!-- Number of Tires -->
+        <tr>
+          <td class="row-label">Number of Tires</td>
+          <td><input type="text" id="axleTires1" value="2"></td>
+          <td><input type="text" id="axleTires2" value="4"></td>
+          <td><input type="text" id="axleTires3" value="4"></td>
+          <td><input type="text" id="axleTires4" value="4"></td>
+          <td><input type="text" id="axleTires5" value="4"></td>
+          <td><input type="text" id="axleTires6" value=""></td>
+          <td><input type="text" id="axleTires7" value=""></td>
+          <td><input type="text" id="axleTires8" value=""></td>
+          <td><input type="text" id="axleTires9" value=""></td>
+          <td><input type="text" id="axleTires10" value=""></td>
+          <td><input type="text" id="axleTires11" value=""></td>
+          <td><input type="text" id="axleTires12" value=""></td>
+          <td><input type="text" id="axleTires13" value=""></td>
+        </tr>
+        <!-- Tread Width -->
+        <tr>
+          <td class="row-label">Tread Width</td>
+          <td><input type="text" id="treadWidth1" value="11"></td>
+          <td><input type="text" id="treadWidth2" value="11"></td>
+          <td><input type="text" id="treadWidth3" value="11"></td>
+          <td><input type="text" id="treadWidth4" value="11"></td>
+          <td><input type="text" id="treadWidth5" value="11"></td>
+          <td><input type="text" id="treadWidth6" value=""></td>
+          <td><input type="text" id="treadWidth7" value=""></td>
+          <td><input type="text" id="treadWidth8" value=""></td>
+          <td><input type="text" id="treadWidth9" value=""></td>
+          <td><input type="text" id="treadWidth10" value=""></td>
+          <td><input type="text" id="treadWidth11" value=""></td>
+          <td><input type="text" id="treadWidth12" value=""></td>
+          <td><input type="text" id="treadWidth13" value=""></td>
+        </tr>
+        <!-- Axle Gauge -->
+        <tr>
+          <td class="row-label">Axle Gauge</td>
+          <td><input type="text" id="axleGauge1" value="8' 0&quot;"></td>
+          <td><input type="text" id="axleGauge2" value="8' 0&quot;"></td>
+          <td><input type="text" id="axleGauge3" value="8' 0&quot;"></td>
+          <td><input type="text" id="axleGauge4" value="8' 0&quot;"></td>
+          <td><input type="text" id="axleGauge5" value="8' 0&quot;"></td>
+          <td><input type="text" id="axleGauge6" value=""></td>
+          <td><input type="text" id="axleGauge7" value=""></td>
+          <td><input type="text" id="axleGauge8" value=""></td>
+          <td><input type="text" id="axleGauge9" value=""></td>
+          <td><input type="text" id="axleGauge10" value=""></td>
+          <td><input type="text" id="axleGauge11" value=""></td>
+          <td><input type="text" id="axleGauge12" value=""></td>
+          <td><input type="text" id="axleGauge13" value=""></td>
+        </tr>
+        <!-- Axle Spacing -->
+        <tr>
+          <td class="row-label">Axle Spacing</td>
+          <td><input type="text" id="spacing12" value="18' 6&quot;" title="1 to 2"></td>
+          <td><input type="text" id="spacing23" value="4' 6&quot;" title="2 to 3"></td>
+          <td><input type="text" id="spacing34" value="33' 0&quot;" title="3 to 4"></td>
+          <td><input type="text" id="spacing45" value="11' 0&quot;" title="4 to 5"></td>
+          <td><input type="text" id="spacing56" value="" title="5 to 6"></td>
+          <td><input type="text" id="spacing67" value="" title="6 to 7"></td>
+          <td><input type="text" id="spacing78" value="" title="7 to 8"></td>
+          <td><input type="text" id="spacing89" value="" title="8 to 9"></td>
+          <td><input type="text" id="spacing910" value="" title="9 to 10"></td>
+          <td><input type="text" id="spacing1011" value="" title="10 to 11"></td>
+          <td><input type="text" id="spacing1112" value="" title="11 to 12"></td>
+          <td><input type="text" id="spacing1213" value="" title="12 to 13"></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <button id="runBtn">Autofill Form</button>
+  <div class="status" id="statusText">Open DOT portal and click</div>
+  <button type="button" id="clearDraftBtn" class="secondary-button">Clear saved draft</button>
+
+  <!-- ================= GOOGLE MAPS EMBED ================= -->
+  <div id="testMapsSection" class="test-maps-wrap">
+    <div class="test-maps-header">
+      <strong>🗺️ Google Maps Marshruti (Extension Ichida)</strong>
+    </div>
+
+    <div class="row" style="margin-bottom: 6px;">
+      <div class="field">
+        <input type="text" id="mapOriginInput" placeholder="Origin (e.g. 25th St & Warwick Blvd)" />
+      </div>
+      <div class="field">
+        <input type="text" id="mapDestInput" placeholder="Destination (e.g. 5820 ERIE AVE NW)" />
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+      <button type="button" id="btnBuildRoute" class="btn-maps-route">
+        🚀 Marshrutni Chizish
+      </button>
+      <button type="button" id="btnOpenExternalMaps" class="btn-maps-ext">
+        Google Maps ↗
+      </button>
+      <button type="button" id="btnClearMap" class="btn-maps-clear">
+        ✕
+      </button>
+    </div>
+
+    <div id="mapFrameWrapper" style="width: 100%; height: 280px; border-radius: 6px; overflow: hidden; border: 1px solid #cbd5e1; background: #e2e8f0; position: relative;">
+      <iframe 
+        id="gmapsRouteFrame"
+        width="100%" 
+        height="100%" 
+        style="border: 0;" 
+        loading="lazy"
+        src="about:blank">
+      </iframe>
+      <div id="mapFrameEmptyNotice" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f1f5f9; font-size: 11px; color: #64748b; font-weight: 600; text-align: center; padding: 10px; box-sizing: border-box;">
+        Manzillarni yozib "Marshrutni Chizish" tugmasini bosing
+      </div>
+    </div>
+  </div>
+  <!-- ==================================================== -->
+
+  <script src="popup.js"></script>
+</body>
+</html>

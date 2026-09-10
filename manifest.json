@@ -1,0 +1,133 @@
+{
+  "manifest_version": 3,
+  "name": "Frontline permits AutoFiller",
+  "version": "1.1.0",
+  "description": "Review-first autofill assistant for approved commercial OS/OW permit portals.",
+  "icons": {
+    "16": "icons/icon128.png",
+    "48": "icons/icon128.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "sidePanel",
+    "storage",
+    "tabs",
+    "webNavigation"
+  ],
+  "host_permissions": [
+    "https://alpass.dot.state.al.us/*",
+    "https://adotepro.azdot.gov/*",
+    "https://ar.gotpermits.com/*",
+    "https://ctps.dot.ca.gov/*",
+    "https://coopr.codot.gov/*",
+    "https://cvoportal.ct.gov/*",
+    "https://deldot.gov/*",
+    "https://pas.fdot.gov/*",
+    "https://www.gaprospermits.com/*",
+    "https://permits4idaho.com/*",
+    "https://motorcarrier.dor.in.gov/*",
+    "https://ia.gotpermits.com/*",
+    "https://k-trips.ksdot.gov/*",
+    "https://www.kyautomatedpermitsystem.com/*",
+    "https://lageauxpm.dotd.la.gov/*",
+    "https://www.movememaine.com/*",
+    "https://marylandone.gotpermits.com/*",
+    "https://oasis.massdot.state.ma.us/*",
+    "https://mn.gotpermits.com/*",
+    "https://permits.mdot.ms.gov/*",
+    "https://mcs.modot.mo.gov/*",
+    "https://etrips.mtmdt.us/*",
+    "https://ne.gotpermits.com/*",
+    "https://odvp.dot.nv.gov/*",
+    "https://nhdotpermits.org/*",
+    "https://truckpermits.dot.nm.gov/*",
+    "https://www.oscar.ny.gov/*",
+    "https://pims.services.ncdot.gov/*",
+    "https://apps.nd.gov/*",
+    "https://haulingpermits.transportation.ohio.gov/*",
+    "https://oklahoma.gov/*",
+    "https://www.oregonorion.com/*",
+    "https://www.apras.penndot.pa.gov/*",
+    "https://www.ri.gov/*",
+    "https://safehaul.scdot.org/*",
+    "https://sdaps.sd.gov/*",
+    "https://tntrips.tdot.tn.gov/*",
+    "https://txpros.txdmv.gov/*",
+    "https://app.udot.utah.gov/*",
+    "https://www.vermont.gov/*",
+    "https://www.ezhaulvirginia.com/*",
+    "https://www.esnoopipro.com/*",
+    "https://wv.gotpermits.com/*",
+    "https://wydotpermits.wyo.gov/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; frame-src https://www.google.com/ https://maps.google.com/;"
+  },
+  "side_panel": {
+    "default_path": "popup.html"
+  },
+  "action": {
+    "default_title": "Open Frontline permits AutoFiller"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://alpass.dot.state.al.us/*",
+        "https://adotepro.azdot.gov/*",
+        "https://ar.gotpermits.com/*",
+        "https://ctps.dot.ca.gov/*",
+        "https://coopr.codot.gov/*",
+        "https://cvoportal.ct.gov/*",
+        "https://deldot.gov/*",
+        "https://pas.fdot.gov/*",
+        "https://www.gaprospermits.com/*",
+        "https://permits4idaho.com/*",
+        "https://motorcarrier.dor.in.gov/*",
+        "https://ia.gotpermits.com/*",
+        "https://k-trips.ksdot.gov/*",
+        "https://www.kyautomatedpermitsystem.com/*",
+        "https://lageauxpm.dotd.la.gov/*",
+        "https://www.movememaine.com/*",
+        "https://marylandone.gotpermits.com/*",
+        "https://oasis.massdot.state.ma.us/*",
+        "https://mn.gotpermits.com/*",
+        "https://permits.mdot.ms.gov/*",
+        "https://mcs.modot.mo.gov/*",
+        "https://etrips.mtmdt.us/*",
+        "https://ne.gotpermits.com/*",
+        "https://odvp.dot.nv.gov/*",
+        "https://nhdotpermits.org/*",
+        "https://truckpermits.dot.nm.gov/*",
+        "https://www.oscar.ny.gov/*",
+        "https://pims.services.ncdot.gov/*",
+        "https://apps.nd.gov/*",
+        "https://haulingpermits.transportation.ohio.gov/*",
+        "https://oklahoma.gov/*",
+        "https://www.oregonorion.com/*",
+        "https://www.apras.penndot.pa.gov/*",
+        "https://www.ri.gov/*",
+        "https://safehaul.scdot.org/*",
+        "https://sdaps.sd.gov/*",
+        "https://tntrips.tdot.tn.gov/*",
+        "https://txpros.txdmv.gov/*",
+        "https://app.udot.utah.gov/*",
+        "https://www.vermont.gov/*",
+        "https://www.ezhaulvirginia.com/*",
+        "https://www.esnoopipro.com/*",
+        "https://wv.gotpermits.com/*",
+        "https://wydotpermits.wyo.gov/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "all_frames": true,
+      "match_about_blank": true,
+      "run_at": "document_end"
+    }
+  ]
+}
