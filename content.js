@@ -11,6 +11,7 @@
     "alpass.dot.state.al.us": { label: "Alabama AL-ePASS", adapter: "bentley" },
     "txpros.txdmv.gov": { label: "Texas TxPROS", adapter: "texas" },
     "www.kyautomatedpermitsystem.com": { label: "Kentucky KAPS", adapter: "kentucky" },
+    "lageauxpm.dotd.la.gov": { label: "Louisiana LaGeaux", adapter: "louisiana" },
     "ar.gotpermits.com": { label: "Arkansas ARPARS", adapter: "generic" },
     "ia.gotpermits.com": { label: "Iowa GotPermits", adapter: "generic" },
     "marylandone.gotpermits.com": { label: "Maryland One", adapter: "generic" },
@@ -137,10 +138,12 @@
       matchedFields = fillKentuckyKaps(data) + fillKentuckyKapsAxles(data);
     } else if (portal.adapter === "bentley" || host.includes("superload") || bodyTxt.includes("bentley systems") || bodyTxt.includes("alabama department of transportation")) {
       matchedFields = fillBentleyAlabama(data) + fillBentleySuperloadStep2(data) + fillBentleyDimensionsRow(data);
+    } else if (portal.adapter === "louisiana") {
+      matchedFields = fillLouisianaLaGeaux(data) + fillUniversalCommonFields(data);
     } else {
       matchedFields = fillGenericState(data);
     }
-    if (portal.adapter !== "generic") {
+    if (portal.adapter !== "generic" && portal.adapter !== "louisiana") {
       matchedFields += fillUniversalVehicleInfo(data);
       matchedFields += fillUniversalCommonFields(data);
     }
@@ -502,7 +505,45 @@
   }
 
   // =========================================================
-  // 4. BOSHQA BARCHA SHTATLAR UCHUN STANDARD GENERIC REJIM
+  // 4. LOUISIANA (LaGeaux / SafeHaul)
+  // =========================================================
+  function fillLouisianaLaGeaux(data) {
+    let count = 0;
+    const sections = Array.from(document.querySelectorAll("fieldset"));
+    const truckSection = sections.find(section => cleanText(section.querySelector("legend")?.innerText || "") === "truck");
+    const trailerSection = sections.find(section => cleanText(section.querySelector("legend")?.innerText || "") === "trailer");
+
+    const fillRow = (section, label, value) => {
+      if (!section || !value) return;
+      const row = Array.from(section.querySelectorAll("tr")).find(candidate => {
+        const heading = candidate.querySelector("th, td");
+        return cleanText(heading?.innerText || "").startsWith(cleanText(label));
+      });
+      const control = row?.querySelector("input:not([type='hidden']):not([type='checkbox']), select, textarea");
+      if (control && setNativeValue(control, value)) {
+        control.dataset.autofilled = "true";
+        count++;
+      }
+    };
+
+    // Do not alter the "Pre-Saved ... Fleet Unit" dropdowns; these can reset the form.
+    fillRow(truckSection, "Year", data.truckYear);
+    fillRow(truckSection, "Make", data.truckMake);
+    fillRow(truckSection, "Tag Number", data.truckPlate);
+    fillRow(truckSection, "Tag State", data.truckState);
+    fillRow(truckSection, "VIN", data.truckVin);
+    fillRow(truckSection, "Truck Fleet Unit", data.truckUnit);
+
+    fillRow(trailerSection, "Make", data.trailerMake);
+    fillRow(trailerSection, "Tag Number", data.trailerPlate);
+    fillRow(trailerSection, "Tag State", data.trailerState);
+    fillRow(trailerSection, "Trailer VIN", data.trailerVin);
+    fillRow(trailerSection, "Trailer Fleet Unit", data.trailerUnit);
+    return count;
+  }
+
+  // =========================================================
+  // 5. BOSHQA BARCHA SHTATLAR UCHUN STANDARD GENERIC REJIM
   // =========================================================
   function fillGenericState(data) {
     let filledCount = 0;
@@ -664,7 +705,8 @@
     const containerText = container?.innerText || "";
     // A broad page-level div can contain both truck and trailer labels, which
     // would cause the wrong vehicle data to be selected.
-    const nearbyText = containerText.length <= 500 ? containerText : "";
+    const controlCount = container?.querySelectorAll("input, select, textarea").length || 0;
+    const nearbyText = containerText.length <= 500 && controlCount <= 1 ? containerText : "";
     return cleanText(`${rawLabel} ${attributes} ${nearbyText}`);
   }
 
