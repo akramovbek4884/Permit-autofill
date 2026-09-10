@@ -543,12 +543,14 @@
     fillControl("text-apply-general-usdotNo", data.usdot);
     fillControl("combo-apply-general-commodity", data.commodity);
     fillControl("text-apply-oversize-grossweight", sanitizeNumber(data.grossWeight));
-    fillControl("text-apply-oversize-height", data.overallHeight);
-    fillControl("text-apply-oversize-width", data.overallWidth);
-    fillControl("text-apply-oversize-trailerlength", data.trailerLength);
-    fillControl("text-apply-oversize-totalLength", data.overallLength);
-    fillControl("text-apply-oversize-frontOverhang", data.frontOverhang || "0");
-    fillControl("text-apply-oversize-rearOverhang", data.rearOverhang || "0");
+    // LaGeaux validates dimensions as feet-inches with a hyphen (for example
+    // "14-0"), rather than the standard 14' 0" display used in the panel.
+    fillControl("text-apply-oversize-height", formatLouisianaDimension(data.overallHeight));
+    fillControl("text-apply-oversize-width", formatLouisianaDimension(data.overallWidth));
+    // Trailer Length is calculated by LaGeaux and is disabled for this setup.
+    fillControl("text-apply-oversize-totalLength", formatLouisianaDimension(data.overallLength));
+    fillControl("text-apply-oversize-frontOverhang", formatLouisianaDimension(data.frontOverhang || "0"));
+    fillControl("text-apply-oversize-rearOverhang", formatLouisianaDimension(data.rearOverhang || "0"));
 
     fillControl("text-apply-truck-year", data.truckYear);
     fillControl("combo-apply-truck-make", data.truckMake);
@@ -768,6 +770,11 @@
 
   function matches(targetText, phrases) {
     return phrases.some(p => targetText.includes(cleanText(p)));
+  }
+
+  function formatLouisianaDimension(value) {
+    const { feet, inches } = parseFeetInches(value);
+    return `${feet || "0"}-${inches || "0"}`;
   }
 
   function sanitizeNumber(val) {
