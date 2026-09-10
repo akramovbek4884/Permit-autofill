@@ -29,6 +29,7 @@ const grossWeightInput = document.getElementById("grossWeightInput");
 let currentCompany = null;
 let currentMatchingTrailers = [];
 const DRAFT_STORAGE_KEY = "permitAutofillDraftV1";
+const LAST_PERMIT_STORAGE_KEY = "permitAutofillLastPayloadV1";
 const DRAFT_INPUT_SELECTOR = "input[id]:not([id^='map'])";
 let saveDraftTimer = null;
 
@@ -64,7 +65,7 @@ document.addEventListener("input", event => {
 const clearDraftBtn = document.getElementById("clearDraftBtn");
 if (clearDraftBtn) {
   clearDraftBtn.addEventListener("click", async () => {
-    await chrome.storage.local.remove(DRAFT_STORAGE_KEY);
+    await chrome.storage.local.remove([DRAFT_STORAGE_KEY, LAST_PERMIT_STORAGE_KEY]);
     getDraftInputs().forEach(input => { input.value = ""; });
     document.getElementById("statusText").textContent = "Saved draft cleared.";
   });
@@ -510,6 +511,15 @@ if (runBtn) {
       totalAxles: document.getElementById("totalAxlesInput")?.value?.trim() || "5",
       axles: collectedAxles
     };
+
+    // Keep the last locally-entered payload so the in-page review button also
+    // works after a portal refresh. This data never leaves Chrome storage
+    // unless the user explicitly runs autofill on an approved portal.
+    try {
+      await chrome.storage.local.set({ [LAST_PERMIT_STORAGE_KEY]: payload });
+    } catch (error) {
+      console.warn("Autofill payload could not be saved locally:", error);
+    }
 
     chrome.runtime.sendMessage({ action: "AUTOFILL_ACTIVE_TAB", data: payload }, response => {
       if (chrome.runtime.lastError) {

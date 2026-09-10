@@ -6,6 +6,7 @@
 
   let activePermitData = null;
   let deferredFillTimer = null;
+  const LAST_PERMIT_STORAGE_KEY = "permitAutofillLastPayloadV1";
 
   const PORTALS = Object.freeze({
     "alpass.dot.state.al.us": { label: "Alabama AL-ePASS", adapter: "bentley" },
@@ -60,24 +61,36 @@
       btn.style.right = "-36px";
     });
 
+    const runAutofill = data => {
+      const result = routeAndFillState(data);
+      scheduleDeferredFill(data);
+      btn.innerText = `✓ FILLED (${result.matchedFields}) · REVIEW`;
+      btn.style.backgroundColor = "#16a34a";
+      setTimeout(() => {
+        btn.innerText = "⚡ AUTOFILL PERMIT";
+        btn.style.backgroundColor = "#2563eb";
+      }, 2500);
+    };
+
     btn.addEventListener("click", () => {
-      if (!activePermitData) {
+      if (activePermitData) {
+        runAutofill(activePermitData);
+        return;
+      }
+      chrome.storage.local.get(LAST_PERMIT_STORAGE_KEY, stored => {
+        const savedData = stored?.[LAST_PERMIT_STORAGE_KEY];
+        if (savedData) {
+          activePermitData = savedData;
+          runAutofill(savedData);
+          return;
+        }
         btn.innerText = "⚠️ OPEN PANEL FIRST";
         btn.style.backgroundColor = "#d97706";
         setTimeout(() => {
           btn.innerText = "⚡ AUTOFILL PERMIT";
           btn.style.backgroundColor = "#2563eb";
         }, 2000);
-        return;
-      }
-      const result = routeAndFillState(activePermitData);
-      btn.innerText = `✓ FILLED (${result.matchedFields}) · REVIEW`;
-      btn.style.backgroundColor = "#16a34a";
-
-      setTimeout(() => {
-        btn.innerText = "⚡ AUTOFILL PERMIT";
-        btn.style.backgroundColor = "#2563eb";
-      }, 2500);
+      });
     });
 
     document.body.appendChild(btn);
