@@ -509,36 +509,47 @@
   // =========================================================
   function fillLouisianaLaGeaux(data) {
     let count = 0;
-    const sections = Array.from(document.querySelectorAll("fieldset"));
-    const truckSection = sections.find(section => cleanText(section.querySelector("legend")?.innerText || "") === "truck");
-    const trailerSection = sections.find(section => cleanText(section.querySelector("legend")?.innerText || "") === "trailer");
-
-    const fillRow = (section, label, value) => {
-      if (!section || !value) return;
-      const row = Array.from(section.querySelectorAll("tr")).find(candidate => {
-        const heading = candidate.querySelector("th, td");
-        return cleanText(heading?.innerText || "").startsWith(cleanText(label));
-      });
-      const control = row?.querySelector("input:not([type='hidden']):not([type='checkbox']), select, textarea");
-      if (control && setNativeValue(control, value)) {
+    // LaGeaux is an ExtJS application, not a table form.  Its visual element
+    // IDs change each visit, but its data-selenium-id names are stable.
+    // This also deliberately excludes the pre-saved fleet pickers: selecting
+    // one can replace the data the dispatcher is entering manually.
+    const fillControl = (seleniumId, value) => {
+      if (value === undefined || value === null || value === "") return;
+      const control = document.querySelector(
+        `[data-selenium-id="${seleniumId}"] input:not([type='hidden']):not([type='checkbox']), ` +
+        `[data-selenium-id="${seleniumId}"] textarea, ` +
+        `[data-selenium-id="${seleniumId}"] select`
+      );
+      if (!control || control.disabled || control.dataset.autofilled === "true") return;
+      if (setNativeValue(control, value)) {
         control.dataset.autofilled = "true";
         count++;
       }
     };
 
-    // Do not alter the "Pre-Saved ... Fleet Unit" dropdowns; these can reset the form.
-    fillRow(truckSection, "Year", data.truckYear);
-    fillRow(truckSection, "Make", data.truckMake);
-    fillRow(truckSection, "Tag Number", data.truckPlate);
-    fillRow(truckSection, "Tag State", data.truckState);
-    fillRow(truckSection, "VIN", data.truckVin);
-    fillRow(truckSection, "Truck Fleet Unit", data.truckUnit);
+    fillControl("text-apply-general-usdotNo", data.usdot);
+    fillControl("combo-apply-general-commodity", data.commodity);
+    fillControl("text-apply-oversize-grossweight", sanitizeNumber(data.grossWeight));
+    fillControl("text-apply-oversize-height", data.overallHeight);
+    fillControl("text-apply-oversize-width", data.overallWidth);
+    fillControl("text-apply-oversize-trailerlength", data.trailerLength);
+    fillControl("text-apply-oversize-totalLength", data.overallLength);
+    fillControl("text-apply-oversize-frontOverhang", data.frontOverhang || "0");
+    fillControl("text-apply-oversize-rearOverhang", data.rearOverhang || "0");
 
-    fillRow(trailerSection, "Make", data.trailerMake);
-    fillRow(trailerSection, "Tag Number", data.trailerPlate);
-    fillRow(trailerSection, "Tag State", data.trailerState);
-    fillRow(trailerSection, "Trailer VIN", data.trailerVin);
-    fillRow(trailerSection, "Trailer Fleet Unit", data.trailerUnit);
+    fillControl("text-apply-truck-year", data.truckYear);
+    fillControl("combo-apply-truck-make", data.truckMake);
+    fillControl("text-apply-truck-tagNo", data.truckPlate);
+    fillControl("combo-apply-truck-tagState", data.truckState);
+    fillControl("text-apply-truck-vin", data.truckVin);
+    fillControl("text-apply-truck-truckFleetUnit", data.truckUnit);
+
+    fillControl("text-apply-trailer-year", data.trailerYear);
+    fillControl("combo-apply-trailer-make", data.trailerMake);
+    fillControl("text-apply-trailer-tagNo", data.trailerPlate);
+    fillControl("combo-apply-trailer-tagState", data.trailerState);
+    fillControl("text-apply-trailer-vin", data.trailerVin);
+    fillControl("text-apply-trailer-trailerFleetUnit", data.trailerUnit);
     return count;
   }
 
